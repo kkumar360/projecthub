@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ task.task_title }} - Project Manager{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2>{{ task.task_title }}</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Task Details</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Task ID:</strong> {{ task.task_id }}<br>
+                        <strong>Project:</strong> {{ task.project.project_title }}<br>
+                        <strong>Status:</strong>
+                        {% if task.status == 'pending' %}
+                            <span class="badge badge-pending">Pending</span>
+                        {% elif task.status == 'in_progress' %}
+                            <span class="badge badge-in-progress">In Progress</span>
+                        {% else %}
+                            <span class="badge badge-completed">Completed</span>
+                        {% endif %}<br>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Created:</strong> {{ task.created_at|date:"M d, Y H:i" }}<br>
+                        <strong>Last Updated:</strong> {{ task.updated_at|date:"M d, Y H:i" }}<br>
+                    </div>
+                </div>
+
+                <hr>
+
+                <h6>Description:</h6>
+                <p>{{ task.task_description }}</p>
+
+                <hr>
+
+                <h6>Update Status:</h6>
+                <form method="POST" action="{% url 'update_task_status' task.id %}">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <select name="status" class="form-control" required>
+                            <option value="pending" {% if task.status == 'pending' %}selected{% endif %}>Pending</option>
+                            <option value="in_progress" {% if task.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+                            <option value="completed" {% if task.status == 'completed' %}selected{% endif %}>Completed</option>
+                        </select>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Update Status</button>
+                        <a href="{% url 'employee_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - ProjectHub{% endblock %}
+
+{% block content %}
+<div class="row mb-5">
+    <div class="col-md-12">
+        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 30px;">
+            <div style="font-size: 2.5rem;">📊</div>
+            <div>
+                <h1 style="margin-bottom: 5px;">Admin Dashboard</h1>
+                <p class="text-muted" style="margin: 0;">Manage projects, tasks, and employees</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="stat-card">
+            <h5>Total Projects</h5>
+            <h3>{{ total_projects }}</h3>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <h5>Total Employees</h5>
+            <h3>{{ total_employees }}</h3>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <h5>Action Buttons</h5>
+            <a href="{% url 'create_project' %}" class="btn btn-sm btn-primary mt-2">New Project</a>
+            <a href="{% url 'create_task' %}" class="btn btn-sm btn-info mt-2">New Task</a>
+        </div>
+    </div>
+</div>
+
+<!-- Projects Section -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Your Projects</h5>
+            </div>
+            <div class="card-body">
+                {% if project_data %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Project ID</th>
+                                    <th>Project Title</th>
+                                    <th>Progress</th>
+                                    <th>Tasks</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for data in project_data %}
+                                    <tr>
+                                        <td>{{ data.project.project_id }}</td>
+                                        <td>{{ data.project.project_title }}</td>
+                                        <td>
+                                            <div class="progress" style="height: 20px;">
+                                                <div class="progress-bar bg-success" role="progressbar" style="width: {{ data.progress }}%; "aria-valuenow="{{ data.progress }}" aria-valuemin="0" aria-valuemax="100">
+                                                    {{ data.progress }}%
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge bg-primary">{{ data.completed_tasks }}/{{ data.total_tasks }}</span></td>
+                                        <td>
+                                            <a href="{% url 'project_details' data.project.id %}" class="btn btn-sm btn-info">View</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No projects created yet. <a href="{% url 'create_project' %}">Create one now</a></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Employees Section -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Employees</h5>
+                    <a href="{% url 'register_employee' %}" class="btn btn-sm btn-success">+ Add Employee</a>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if employees %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Employee ID</th>
+                                    <th>Username</th>
+                                    <th>Assigned Tasks</th>
+                                    <th>Completed Tasks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for data in employee_data %}
+                                    <tr>
+                                        <td>{{ data.employee.employee_id }}</td>
+                                        <td>{{ data.employee.username }}</td>
+                                        <td><span class="badge bg-warning">{{ data.total_tasks }}</span></td>
+                                        <td><span class="badge bg-success">{{ data.completed_tasks }}</span></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No employees in the system.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Activity Timeline Section -->
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">📅 Recent Activity</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_activities %}
+                    <div class="timeline">
+                        {% for activity in recent_activities %}
+                            <div class="timeline-item" style="margin-bottom: 15px; padding-left: 30px; border-left: 3px solid #0d6efd; position: relative;">
+                                <div style="position: absolute; left: -11px; top: 0; width: 20px; height: 20px; background: #0d6efd; border-radius: 50%; border: 2px solid white;"></div>
+                                <p style="margin: 0; font-weight: 600;">{{ activity.get_action_type_display }}</p>
+                                <p style="margin: 0; color: #6c757d; font-size: 0.9rem;">
+                                    {{ activity.description }} • <small>{{ activity.created_at|date:"M d, Y H:i" }}</small>
+                                </p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted">No activity yet</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

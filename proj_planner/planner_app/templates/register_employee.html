@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block title %}Register New Employee - ProjectHub{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 30px;">
+            <div style="font-size: 1.8rem;">➕</div>
+            <div>
+                <h2 style="margin-bottom: 3px;">Register New Employee</h2>
+                <p class="text-muted">Add a new team member to your system</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-user-plus"></i> Employee Registration
+            </div>
+            <div class="card-body">
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-triangle"></i> <strong>Error!</strong>
+                        {% for error in form.non_field_errors %}
+                            <div>{{ error }}</div>
+                        {% endfor %}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endif %}
+
+                <form method="POST" action="{% url 'register_employee' %}">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.username.id_for_label }}" class="form-label">
+                            <i class="fas fa-user"></i> Username
+                        </label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                            <div class="invalid-feedback d-block">{{ form.username.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.employee_id.id_for_label }}" class="form-label">
+                            <i class="fas fa-id-badge"></i> Employee ID
+                        </label>
+                        {{ form.employee_id }}
+                        {% if form.employee_id.errors %}
+                            <div class="invalid-feedback d-block">{{ form.employee_id.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.password.id_for_label }}" class="form-label">
+                            <i class="fas fa-lock"></i> Password
+                        </label>
+                        {{ form.password }}
+                        {% if form.password.errors %}
+                            <div class="invalid-feedback d-block">{{ form.password.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.confirm_password.id_for_label }}" class="form-label">
+                            <i class="fas fa-lock-alt"></i> Confirm Password
+                        </label>
+                        {{ form.confirm_password }}
+                        {% if form.confirm_password.errors %}
+                            <div class="invalid-feedback d-block">{{ form.confirm_password.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success" style="font-weight: 700;">
+                            <i class="fas fa-check-circle"></i> Register Employee
+                        </button>
+                        <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card bg-light" style="border-top: 4px solid #667eea;">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="fas fa-lightbulb"></i> Registration Guidelines</h5>
+            </div>
+            <div class="card-body">
+                <h6 style="color: #667eea; margin-top: 15px;">👤 Username</h6>
+                <ul style="font-size: 0.9rem; padding-left: 20px;">
+                    <li>Must be unique</li>
+                    <li>Max 10 characters</li>
+                    <li>Use alphanumeric characters</li>
+                </ul>
+
+                <h6 style="color: #667eea; margin-top: 15px;">🆔 Employee ID</h6>
+                <ul style="font-size: 0.9rem; padding-left: 20px;">
+                    <li>Must be unique</li>
+                    <li>Max 10 characters</li>
+                    <li>Example: EMP001, EMP002</li>
+                </ul>
+
+                <h6 style="color: #667eea; margin-top: 15px;">🔐 Password</h6>
+                <ul style="font-size: 0.9rem; padding-left: 20px;">
+                    <li>Minimum 6 characters</li>
+                    <li>Must be confirmed</li>
+                    <li>Use strong passwords</li>
+                </ul>
+
+                <div class="alert alert-info" style="margin-top: 20px; border: none;">
+                    <i class="fas fa-info-circle"></i> <strong>Tip:</strong> After registration, you can assign tasks to the employee from the dashboard.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

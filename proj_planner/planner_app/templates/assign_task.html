@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Task - Project Manager{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2>Manage Task</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">{{ task.task_title }}</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <strong>Task ID:</strong> {{ task.task_id }}<br>
+                    <strong>Project:</strong> {{ task.project.project_title }}<br>
+                    <strong>Description:</strong> {{ task.task_description }}<br>
+                    <strong>Assigned To:</strong> 
+                    {% if task.assigned_to %}
+                        {{ task.assigned_to.username }}
+                    {% else %}
+                        <span class="text-muted">Unassigned</span>
+                    {% endif %}<br>
+                    <strong>Created:</strong> {{ task.created_at|date:"M d, Y H:i" }}
+                </div>
+
+                <hr>
+
+                <form method="POST" action="{% url 'assign_task' task.id %}">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.assigned_to.id_for_label }}" class="form-label">👤 Assign To Employee</label>
+                        {{ form.assigned_to }}
+                        {% if form.assigned_to.errors %}
+                            <div class="invalid-feedback d-block">{{ form.assigned_to.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.priority.id_for_label }}" class="form-label">🎯 Priority Level</label>
+                        {{ form.priority }}
+                        {% if form.priority.errors %}
+                            <div class="invalid-feedback d-block">{{ form.priority.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.status.id_for_label }}" class="form-label">📊 Task Status</label>
+                        {{ form.status }}
+                        {% if form.status.errors %}
+                            <div class="invalid-feedback d-block">{{ form.status.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">💾 Update Task</button>
+                        <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Back</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
